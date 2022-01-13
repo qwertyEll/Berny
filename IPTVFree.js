@@ -1,9 +1,7 @@
 (function () {
     'use strict';
-    
-    var catalogs = [{"name":"=== \u041e\u0431\u043d\u043e\u0432\u043b\u0451\u043d: 11.01.2022 === smarttvnews.ru ===","video":"https:\/\/smarttvnews.ru\/wp-content\/uploads\/2018\/11\/BT-2016-logo_color7890.png","group":"All"}];
-var groups = [{"title":"All"}];
-     function iptvr(object) {
+
+    function rtv_22(object) {
       var network = new Lampa.Reguest();
       var scroll = new Lampa.Scroll({
         mask: true,
@@ -16,38 +14,47 @@ var groups = [{"title":"All"}];
       var info;
       var last;
       var waitload;
+
       this.create = function () {
         var _this = this;
+
         this.activity.loader(true);
-        var category = catalogs.filter(function (ch) {
-            return ch.group == object.url;
-        });
-        if(category.length){
-            info = Lampa.Template.get('info');
-            info.find('.info__rate,.info__right').remove();
-            scroll.render().addClass('layer--wheight').data('mheight', info);
-            html.append(info);
-            html.append(scroll.render());
-            this.append(category);
-            scroll.append(body);
-            this.activity.loader(false);
-            this.activity.toggle();
-        }
-        else {
+        network.silent(object.url, this.build.bind(this), function () {
           var empty = new Lampa.Empty();
           html.append(empty.render());
           _this.start = empty.start;
+
           _this.activity.loader(false);
+
           _this.activity.toggle();
-        }
+        });
         return this.render();
       };
+
+      this.next = function () {
+        var _this2 = this;
+
+        if (waitload) return;
+
+        if (object.page < 1) {
+          waitload = true;
+          object.page++;
+          network.silent(object.url + '?pg=' + object.page, function (result) {
+            _this2.append(result);
+
+            if (result.length) waitload = false;
+            Lampa.Controller.enable('content');
+          });
+        }
+      };
+
       this.append = function (data) {
         var _this3 = this;
+
         data.forEach(function (element) {
           var card = Lampa.Template.get('card', {
             title: element.name,
-            release_year: element.group + (element.epg ? ' / ' + element.epg : '')
+            release_year: element.time + (element.quality ? ' / ' + element.quality : '')
           });
           card.addClass('card--collection');
           card.find('.card__img').attr('src', element.picture);
@@ -55,7 +62,9 @@ var groups = [{"title":"All"}];
             last = card[0];
             scroll.update(card, true);
             info.find('.info__title').text(element.name);
-            info.find('.info__title-original').text(element.group + (element.epg ? ' / ' + element.epg : ''));
+            info.find('.info__title-original').text(element.time + (element.quality ? ' / ' + element.quality : ''));
+            var maxrow = Math.ceil(items.length / 10) - 1;
+            if (Math.ceil(items.indexOf(card) / 10) >= maxrow) _this3.next();
           });
           card.on('hover:enter', function () {
             var video = {
@@ -63,19 +72,25 @@ var groups = [{"title":"All"}];
               url: element.video
             };
             Lampa.Player.play(video);
-            var playlist = [];
-            items.forEach(function (elem) {
-              playlist.push({
-                title: elem.name,
-                url: elem.video
-              });
-            });
-            Lampa.Player.playlist(playlist);
+            Lampa.Player.playlist([video]);
           });
           body.append(card);
           items.push(card);
         });
       };
+
+      this.build = function (data) {
+        info = Lampa.Template.get('info');
+        info.find('.info__rate,.info__right').remove();
+        scroll.render().addClass('layer--wheight').data('mheight', info);
+        html.append(info);
+        html.append(scroll.render());
+        this.append(data);
+        scroll.append(body);
+        this.activity.loader(false);
+        this.activity.toggle();
+      };
+
       this.start = function () {
         Lampa.Controller.add('content', {
           toggle: function toggle() {
@@ -100,11 +115,15 @@ var groups = [{"title":"All"}];
         });
         Lampa.Controller.toggle('content');
       };
+
       this.pause = function () {};
+
       this.stop = function () {};
+
       this.render = function () {
         return html;
       };
+
       this.destroy = function () {
         network.clear();
         scroll.destroy();
@@ -119,21 +138,23 @@ var groups = [{"title":"All"}];
       };
     }
 
-    function startPlugin() {
-      window.plugin_iptvr_ready = true;
-      Lampa.Component.add('iptvr', iptvr);
+    function startrtv_22() {
+      window.plugin_rtv_22_ready = true;
+      Lampa.Component.add('rtv_22', rtv_22);
+     var catalogs = [{"name":"=== \u041e\u0431\u043d\u043e\u0432\u043b\u0451\u043d: 11.01.2022 === smarttvnews.ru ===","video":"https:\/\/smarttvnews.ru\/wp-content\/uploads\/2018\/11\/BT-2016-logo_color7890.png","group":"All"}];
+var groups = [{"title":"All"}];
       Lampa.Listener.follow('app', function (e) {
         if (e.type == 'ready') {var ico = '<svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" color="#fff" fill="currentColor" class="bi bi-tv"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>';
-          var menu_item = $('<li class="menu__item selector focus" data-action="iptvr_316030216282790916"><div class="menu__ico">' + ico + '</div><div class="menu__text">“¬</div></li>');
+           var menu_item = $('<li class="menu__item selector focus" data-action="rtv_22"><div class="menu__ico">' + ico + '</div><div class="menu__text">–¢–í</div></li>');
           menu_item.on('hover:enter', function () {
             Lampa.Select.show({
-              title: ' ‡ÚÂ„ÓËË',
-              items: groups,
+              title: '–ö–∞—Ç–µ–≥–æ—Ä–∏–∏',
+              items: catalogs,
               onSelect: function onSelect(a) {
                 Lampa.Activity.push({
-                  url: a.title,
+                  url: a.url,
                   title: a.title,
-                  component: 'iptvr',
+                  component: 'rtv_22',
                   page: 1
                 });
               },
@@ -147,6 +168,6 @@ var groups = [{"title":"All"}];
       });
     }
 
-    if (!window.plugin_iptvr_ready) startPlugin();
+    if (!window.plugin_rtv_22_ready) startrtv_22();
 
 })();
