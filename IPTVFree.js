@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    function rtv_22(object) {
+    function irtv(object) {
       var network = new Lampa.Reguest();
       var scroll = new Lampa.Scroll({
         mask: true,
@@ -63,8 +63,8 @@
             scroll.update(card, true);
             info.find('.info__title').text(element.name);
             info.find('.info__title-original').text(element.time + (element.quality ? ' / ' + element.quality : ''));
-            var maxrow = Math.ceil(items.length / 10) - 1;
-            if (Math.ceil(items.indexOf(card) / 10) >= maxrow) _this3.next();
+            var maxrow = Math.ceil(items.length / 7) - 1;
+            if (Math.ceil(items.indexOf(card) / 7) >= maxrow) _this3.next();
           });
           card.on('hover:enter', function () {
             var video = {
@@ -138,14 +138,22 @@
       };
     }
 
-    function startrtv_22() {
-      window.plugin_rtv_22_ready = true;
-      Lampa.Component.add('rtv_22', rtv_22);
-     var catalogs = [{"name":"=== \u041e\u0431\u043d\u043e\u0432\u043b\u0451\u043d: 11.01.2022 === smarttvnews.ru ===","video":"https:\/\/smarttvnews.ru\/wp-content\/uploads\/2018\/11\/BT-2016-logo_color7890.png","group":"All"}];
-var groups = [{"title":"All"}];
+    function startirtv() {
+      window.plugin_irtv_ready = true;
+      Lampa.Component.add('irtv', irtv);
+      var catalogs = [{
+        title: 'Playlist1',
+        url: 'http://zabava-htlive.cdn.ngenix.net/hls/CH_ULTRAHDCINEMA_HLS/bw20000000/variant.m3u8?version=2'
+      }, {
+        title: 'Playlist1',
+        url: 'Ссылка на Playlist2.json'
+      }, {
+        title: 'Playlist1',
+        url: 'Ссылка на Playlist2.json'
+      }];
       Lampa.Listener.follow('app', function (e) {
-        if (e.type == 'ready') {var ico = '<svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" color="#fff" fill="currentColor" class="bi bi-tv"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>';
-           var menu_item = $('<li class="menu__item selector focus" data-action="rtv_22"><div class="menu__ico">' + ico + '</div><div class="menu__text">ТВ</div></li>');
+        if (e.type == 'ready') {var ico = '<svg class="svg svg--nosizes" viewBox="0 0 180 180"> <circle r="50" cx="50" cy="50" fill="gray"/> <circle r="50" cx="130" cy="50" fill="white"/> <circle r="50" cx="50" cy="130" fill="white"/><circle r="50" cx="130" cy="130" fill="gray"/><g fill="none" stroke="none"><path d="M-1,5 H180 M5,-1 V180" stroke-width="10"/><path d="M-1,2 H180 M2,-1 V180" stroke-width="5" stroke-dasharray="1 9"/> <rect width="100%" height="100%" stroke-width="2"/> </g><circle r="5" cx="0" cy="0" fill="teal"/> </svg>';
+          var menu_item = $('<li class="menu__item selector focus" data-action="irtv"><div class="menu__ico">' + ico + '</div><div class="menu__text">ТВ</div></li>');
           menu_item.on('hover:enter', function () {
             Lampa.Select.show({
               title: 'Категории',
@@ -154,7 +162,7 @@ var groups = [{"title":"All"}];
                 Lampa.Activity.push({
                   url: a.url,
                   title: a.title,
-                  component: 'rtv_22',
+                  component: 'irtv',
                   page: 1
                 });
               },
@@ -168,6 +176,6 @@ var groups = [{"title":"All"}];
       });
     }
 
-    if (!window.plugin_rtv_22_ready) startrtv_22();
+    if (!window.plugin_irtv_ready) startirtv();
 
 })();
